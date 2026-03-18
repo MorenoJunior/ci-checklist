@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CI Tavella">
+<title>Checklist Visite CI — Tavella Solutions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f0;color:#1a1a1a;padding:12px;padding-bottom:80px;-webkit-text-size-adjust:100%}
+.header{text-align:center;padding:16px 0 12px;border-bottom:2px solid #0F6E56}
+.header h1{font-size:18px;font-weight:600;color:#0F6E56;margin-bottom:2px}
+.header p{font-size:12px;color:#888}
+.type-banner{text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;margin:12px 0}
+.type-petit{background:#E1F5EE;color:#085041}
+.type-grand{background:#FAEEDA;color:#633806}
+.sec{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #e8e8e3}
+.sec-head{font-size:14px;font-weight:600;color:#0F6E56;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
+.sec-num{background:#0F6E56;color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.row{margin-bottom:12px}
+.lbl{font-size:13px;color:#666;margin-bottom:5px;display:block;font-weight:500}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=tel],select,textarea{width:100%;font-size:16px;padding:11px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0F6E56}
+textarea{min-height:72px;resize:vertical;line-height:1.4}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{font-size:13px;padding:8px 14px;border:1px solid #ddd;border-radius:20px;cursor:pointer;background:#fff;color:#555;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.chip:active{transform:scale(0.96)}
+.chip.on{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
+.cb-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cb-row input[type=checkbox]{width:22px;height:22px;accent-color:#0F6E56;flex-shrink:0}
+.grand-only{display:none}
+.show-grand .grand-only{display:block}
+.note{font-size:12px;color:#999;margin-top:4px}
+.btn-gen{width:100%;padding:16px;font-size:17px;font-weight:600;background:#0F6E56;color:#fff;border:none;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:4px}
+.btn-gen:active{background:#085041;transform:scale(0.98)}
+.btn-copy{width:100%;padding:14px;font-size:15px;font-weight:500;background:#fff;color:#1a1a1a;border:1px solid #ddd;border-radius:10px;cursor:pointer;margin-top:8px}
+.btn-copy:active{background:#f0f0f0}
+.btn-send{width:100%;padding:14px;font-size:15px;font-weight:600;background:#085041;color:#fff;border:none;border-radius:10px;cursor:pointer;margin-top:8px}
+.btn-send:active{background:#04342C;transform:scale(0.98)}
+.output-box{background:#f8f8f5;border-radius:10px;padding:14px;font-size:13px;font-family:'SF Mono',Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:350px;overflow-y:auto;margin-top:10px;color:#333;border:1px solid #e8e8e3;line-height:1.5}
+.hidden{display:none}
+.photo-preview{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.photo-thumb{width:60px;height:60px;border-radius:8px;object-fit:cover;border:1px solid #ddd}
+.photo-item{position:relative}
+.photo-remove{position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:#E24B4A;color:#fff;border:none;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;line-height:1}
+.reset-bar{text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid #eee}
+.reset-btn{font-size:13px;color:#A32D2D;background:none;border:none;cursor:pointer;padding:8px 16px;text-decoration:underline}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:10px;overflow:hidden;border:1px solid #ddd;margin:12px 0}
+.type-toggle button{padding:12px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.type-toggle button.active-petit{background:#E1F5EE;color:#085041}
+.type-toggle button.active-grand{background:#FAEEDA;color:#633806}
+.type-toggle button.inactive{background:#fff;color:#999}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>Checklist visite CI</h1>
+<p>Tavella Solutions Sarl — chauffez renouvelable</p>
+</div>
+
+<div class="type-toggle">
+<button id="btnPetit" class="active-petit" onclick="setType('petit')">Petit CI (450 CHF)</button>
+<button id="btnGrand" class="inactive" onclick="setType('grand')">Grand CI (1800 CHF)</button>
+</div>
+
+<div id="typeBanner" class="type-banner type-petit">Maisons indiv. et immeubles jusqu'a 6 logements / 30 kW</div>
+
+<div id="mainForm">
+
+<!-- 1. IDENTIFICATION -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">1</span> Identification du batiment</div>
+<div class="row"><label class="lbl">Date du conseil</label><input type="date" id="dateConseil"></div>
+<div class="row"><label class="lbl">Adresse du batiment</label><input type="text" id="adresse" placeholder="ex: Rue Jean-Grimoux 2"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">NPA</label><input type="number" id="npa" placeholder="1700" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Localite</label><input type="text" id="localite" placeholder="Fribourg"></div>
+</div>
+<div class="row"><label class="lbl">Canton</label><input type="text" id="canton" value="Fribourg"></div>
+<div class="row"><label class="lbl">EGID</label><input type="text" id="egid" placeholder="ex: 1524668" inputmode="numeric"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">Categorie</label>
+<select id="categorie">
+<option value="">-- Choisir --</option>
+<option>I habitat individuel</option>
+<option>II habitat individuel</option>
+<option>III petit immeuble</option>
+<option>IV immeuble</option>
+<option>V commerce</option>
+<option>VI industrie</option>
+<option>VII administration</option>
+<option>VIII autre</option>
+</select></div>
+<div class="row"><label class="lbl">Nb logements</label><input type="number" id="nbLogements" placeholder="5" inputmode="numeric"></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Annee construction</label><input type="number" id="anneConst" placeholder="1975" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Nb habitants</label><input type="number" id="nbHab" placeholder="10" inputmode="numeric"></div>
+</div>
+<div class="grand-only">
+<div class="grid2">
+<div class="row"><label class="lbl">Nb batiments</label><input type="number" id="nbBat" placeholder="1" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Nb proprietaires</label><input type="number" id="nbProp" placeholder="1" inputmode="numeric"></div>
+</div>
+<div class="row"><label class="lbl">Nb locaux chauffage</label><input type="number" id="nbLocaux" placeholder="1" inputmode="numeric"></div>
+</div>
+<div class="row"><label class="lbl">Assainissements effectues</label><textarea id="assainEffectues" placeholder="ex: Fenetres 2015, isolation toiture 2018"></textarea></div>
+<div class="row"><label class="lbl">Assainissements planifies</label><textarea id="assainPlanifies" placeholder="ex: Changement chauffage"></textarea></div>
+</div>
+
+<!-- 2. PROPRIETAIRE -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">2</span> Proprietaire / interlocuteur</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Prenom</label><input type="text" id="propPrenom"></div>
+<div class="row"><label class="lbl">Nom</label><input type="text" id="propNom"></div>
+</div>
+<div class="row"><label class="lbl">Entreprise / institution</label><input type="text" id="propEntreprise" placeholder="ex: p.a. Bulliard Immobilier"></div>
+<div class="row"><label class="lbl">Adresse</label><input type="text" id="propAdresse"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">NPA</label><input type="number" id="propNpa" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Localite</label><input type="text" id="propLocalite"></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Telephone</label><input type="tel" id="propTel"></div>
+<div class="row"><label class="lbl">E-mail</label><input type="email" id="propEmail"></div>
+</div>
+<div class="row"><label class="lbl">Lien avec le bien</label>
+<div class="chip-group" data-group="propLien">
+<span class="chip on" onclick="toggleChip(this)">Proprietaire</span>
+<span class="chip" onclick="toggleChip(this)">Gerant/e</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="cb-row"><input type="checkbox" id="adresseIdentique"><label for="adresseIdentique">Adresse identique a celle du client</label></div>
+</div>
+
+<!-- 3. CHAUFFAGE EXISTANT -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">3</span> Chauffage existant</div>
+<div class="row"><label class="lbl">Type de chauffage</label>
+<div class="chip-group" data-group="typeChauf">
+<span class="chip on" onclick="toggleChip(this)">Mazout</span>
+<span class="chip" onclick="toggleChip(this)">Gaz</span>
+<span class="chip" onclick="toggleChip(this)">Electrique</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="row"><label class="lbl">Si autre, preciser</label><input type="text" id="chaufAutre" placeholder="ex: bois, pellets"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">Annee installation</label><input type="number" id="anneeChauf" placeholder="2001" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Condensation</label>
+<div class="chip-group" data-group="condensation">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+</div></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Puissance (kW)</label><input type="number" id="puissance" placeholder="80" inputmode="decimal" step="0.1"></div>
+<div class="row"><label class="lbl">Marque / modele</label><input type="text" id="marqueChauf" placeholder="ex: Elcotherm MK 1-80"></div>
+</div>
+<div class="row"><label class="lbl">Emission de chaleur</label>
+<div class="chip-group" data-group="emission">
+<span class="chip" onclick="toggleChip(this)">Chauffage au sol</span>
+<span class="chip" onclick="toggleChip(this)">Radiateur</span>
+<span class="chip" onclick="toggleChip(this)">Mixte</span>
+</div></div>
+<div class="row"><label class="lbl">Conduites isolees</label>
+<div class="chip-group" data-group="conduites">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+<span class="chip" onclick="toggleChip(this)">Partiellement</span>
+</div></div>
+<div class="row"><label class="lbl">Temperatures</label>
+<div class="grid3">
+<div><span class="note">Ext. (°C)</span><input type="number" id="tempExt" placeholder="5" inputmode="decimal" step="0.1"></div>
+<div><span class="note">Depart (°C)</span><input type="number" id="tempDep" placeholder="50" inputmode="decimal" step="0.1"></div>
+<div><span class="note">Retour (°C)</span><input type="number" id="tempRet" placeholder="40" inputmode="decimal" step="0.1"></div>
+</div></div>
+<div class="row"><label class="lbl">Type de mesure</label>
+<div class="chip-group" data-group="tempType">
+<span class="chip" onclick="toggleChip(this)">Mesurees</span>
+<span class="chip" onclick="toggleChip(this)">Parametre de reglage</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Groupes de chauffage</label><textarea id="groupesChauffage" placeholder="Nom / Type / T° depart / T° retour&#10;ex: Radiateurs / Corps de chauffe / 50 / 40&#10;Chauffe-eau / Autre / 60 / 50"></textarea></div>
+</div>
+</div>
+
+<!-- 4. EAU CHAUDE -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">4</span> Eau chaude sanitaire</div>
+<div class="row"><label class="lbl">Type de production</label>
+<div class="chip-group" data-group="eauChaude">
+<span class="chip" onclick="toggleChip(this)">Chaudiere</span>
+<span class="chip" onclick="toggleChip(this)">Chauffe-eau elec.</span>
+<span class="chip" onclick="toggleChip(this)">Chauffe-eau PAC</span>
+<span class="chip" onclick="toggleChip(this)">Solaire thermique</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Distribution</label>
+<div class="chip-group" data-group="centralise">
+<span class="chip" onclick="toggleChip(this)">Centralisee</span>
+<span class="chip" onclick="toggleChip(this)">Decentralisee</span>
+</div></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Contenance (litres)</label><input type="number" id="contenanceCE" placeholder="160" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Marque / modele</label><input type="text" id="marqueCE" placeholder="ex: Statico SU 200.3"></div>
+</div>
+</div>
+
+<!-- 5. CONSOMMATION -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">5</span> Consommation energetique</div>
+<div class="row"><label class="lbl">Consommation chauffage (3 ans)</label>
+<div class="grid3">
+<div><span class="note">Annee 1</span><input type="number" id="conso1" inputmode="numeric"></div>
+<div><span class="note">Annee 2</span><input type="number" id="conso2" inputmode="numeric"></div>
+<div><span class="note">Annee 3</span><input type="number" id="conso3" inputmode="numeric"></div>
+</div></div>
+<div class="row"><label class="lbl">Unite</label>
+<div class="chip-group" data-group="unConso">
+<span class="chip on" onclick="toggleChip(this)">kWh</span>
+<span class="chip" onclick="toggleChip(this)">litres mazout</span>
+<span class="chip" onclick="toggleChip(this)">m3 gaz</span>
+</div></div>
+<div class="cb-row"><input type="checkbox" id="consoInclECS"><label for="consoInclECS">Y compris eau chaude sanitaire</label></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Conso eau chaude separee (kWh)</label>
+<div class="grid3">
+<div><span class="note">Annee 1</span><input type="number" id="consoEC1" inputmode="numeric"></div>
+<div><span class="note">Annee 2</span><input type="number" id="consoEC2" inputmode="numeric"></div>
+<div><span class="note">Annee 3</span><input type="number" id="consoEC3" inputmode="numeric"></div>
+</div></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Couts (CHF/an)</label><input type="number" id="coutEnergie" placeholder="17250" inputmode="numeric"></div>
+<div class="row"><label class="lbl">SRE estimee (m2)</label><input type="number" id="sre" placeholder="619" inputmode="numeric"></div>
+</div>
+</div>
+
+<!-- 6. OBSERVATIONS -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">6</span> Observations terrain</div>
+<div class="row"><label class="lbl">Etat de l'enveloppe</label><textarea id="etatEnveloppe" placeholder="Facades, fenetre, toiture, sous-sol, isolation..."></textarea></div>
+<div class="row"><label class="lbl">Local technique</label><textarea id="localTechnique" placeholder="Etat, espace, conduites, acces..."></textarea></div>
+<div class="row"><label class="lbl">Espace exterieur disponible</label><textarea id="espaceExt" placeholder="Place PAC, acces livraison pellets, forage possible..."></textarea></div>
+<div class="row"><label class="lbl">Reseau de chaleur (CAD)</label>
+<div class="chip-group" data-group="cad">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+<span class="chip" onclick="toggleChip(this)">A verifier</span>
+</div></div>
+<div class="grid2">
+<div class="row"><label class="lbl">Fournisseur elec.</label><input type="text" id="fournElec" placeholder="ex: Groupe E"></div>
+<div class="row"><label class="lbl">Fournisseur chaleur</label><input type="text" id="fournChaleur" placeholder="ex: Groupe E Celsius"></div>
+</div>
+<div class="row"><label class="lbl">Remarques supplementaires</label><textarea id="remarquesSupp" placeholder="Tout detail utile pour le rapport..."></textarea></div>
+</div>
+
+<!-- 7. FAISABILITE -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">7</span> Faisabilite technique</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Puissance necessaire (kW)</label><input type="number" id="puissanceNecessaire" placeholder="50" inputmode="decimal" step="0.1"></div>
+<div class="row"><label class="lbl">ECS via chauffage</label>
+<div class="chip-group" data-group="ecsVia">
+<span class="chip on" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+</div></div>
+</div>
+<div class="row"><label class="lbl">PAC air-eau</label>
+<div class="chip-group" data-group="pacAir">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+<div class="row"><label class="lbl">PAC sondes geothermiques</label>
+<div class="chip-group" data-group="pacSonde">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">PAC eaux souterraines</label>
+<div class="chip-group" data-group="pacEaux">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+</div>
+<div class="row"><label class="lbl">Chauffage pellets</label>
+<div class="chip-group" data-group="pellets">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Bois copeaux</label>
+<div class="chip-group" data-group="copeaux">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+</div>
+<div class="row"><label class="lbl">Raccordement CAD</label>
+<div class="chip-group" data-group="rCad">
+<span class="chip" onclick="toggleChip(this)">Possible</span>
+<span class="chip" onclick="toggleChip(this)">Pas possible</span>
+</div></div>
+<div class="row"><label class="lbl">Systeme recommande</label>
+<select id="sysRecommande">
+<option value="">-- Choisir --</option>
+<option>PAC air-eau</option>
+<option>PAC sondes geothermiques</option>
+<option>PAC eaux souterraines</option>
+<option>Chauffage pellets</option>
+<option>Chauffage copeaux</option>
+<option>Raccordement CAD</option>
+<option>Autre</option>
+</select></div>
+<div class="row"><label class="lbl">Combinaison PV pertinente</label>
+<div class="chip-group" data-group="combPV">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+</div></div>
+<div class="row"><label class="lbl">Combinaison solaire thermique</label>
+<div class="chip-group" data-group="combST">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+</div></div>
+</div>
+
+<!-- 8. PHOTOS -->
+<div class="sec">
+<div class="sec-head"><span class="sec-num">8</span> Photos terrain</div>
+<div class="row">
+<label class="lbl">Prendre ou joindre des photos</label>
+<input type="file" accept="image/*" multiple capture="environment" id="photos" style="font-size:14px;padding:10px;width:100%;border:1px dashed #ccc;border-radius:8px;background:#fafaf7">
+<div class="note">Chaudiere, plaquette signalitique, chauffe-eau, local technique, facade, toiture</div>
+<div id="photoPreview" class="photo-preview"></div>
+</div>
+</div>
+
+<!-- GENERATE -->
+<button class="btn-gen" onclick="generateRecap()">Generer le recapitulatif</button>
+
+<div id="outputWrap" class="hidden">
+<div id="outputBox" class="output-box"></div>
+<button class="btn-copy" onclick="copyRecap()">Copier dans le presse-papier</button>
+<div class="note" style="text-align:center;margin-top:6px">Collez ensuite dans votre Projet Claude « Tavella CI »</div>
+</div>
+
+<div class="reset-bar">
+<button class="reset-btn" onclick="resetForm()">Reinitialiser le formulaire</button>
+</div>
+
+</div>
+
+<script>
+var currentType='petit';
+
+function setType(t){
+currentType=t;
+var banner=document.getElementById('typeBanner');
+var bp=document.getElementById('btnPetit');
+var bg=document.getElementById('btnGrand');
+var form=document.getElementById('mainForm');
+if(t==='grand'){
+banner.className='type-banner type-grand';
+banner.textContent='PPE et grands immeubles >6 logements / >30 kW';
+bp.className='inactive';
+bg.className='active-grand';
+form.classList.add('show-grand');
+}else{
+banner.className='type-banner type-petit';
+banner.textContent='Maisons indiv. et immeubles jusqu\'a 6 logements / 30 kW';
+bp.className='active-petit';
+bg.className='inactive';
+form.classList.remove('show-grand');
+}
+}
+
+function toggleChip(el){
+var parent=el.parentElement;
+parent.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+el.classList.add('on');
+}
+
+function getGroupVal(groupName){
+var grp=document.querySelector('[data-group="'+groupName+'"]');
+if(!grp)return '';
+var a=grp.querySelector('.chip.on');
+return a?a.textContent.trim():'';
+}
+
+function v(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+function ch(id){var e=document.getElementById(id);return e?e.checked:false;}
+
+document.getElementById('photos').addEventListener('change',function(e){
+var preview=document.getElementById('photoPreview');
+preview.innerHTML='';
+Array.from(e.target.files).forEach(function(f,i){
+var reader=new FileReader();
+reader.onload=function(ev){
+var div=document.createElement('div');
+div.className='photo-item';
+var img=document.createElement('img');
+img.className='photo-thumb';
+img.src=ev.target.result;
+div.appendChild(img);
+preview.appendChild(div);
+};
+reader.readAsDataURL(f);
+});
+});
+
+function generateRecap(){
+var type=currentType==='grand'?'GRAND CI (1800 CHF)':'PETIT CI (450 CHF)';
+var r='=== RECAPITULATIF VISITE TERRAIN CI ===\n';
+r+='Type: '+type+'\n\n';
+
+r+='--- IDENTIFICATION ---\n';
+r+='Date: '+v('dateConseil')+'\n';
+r+='Adresse: '+v('adresse')+', '+v('npa')+' '+v('localite')+'\n';
+r+='Canton: '+v('canton')+'\n';
+r+='EGID: '+v('egid')+'\n';
+r+='Categorie: '+v('categorie')+'\n';
+r+='Nb logements: '+v('nbLogements')+'\n';
+r+='Annee construction: '+v('anneConst')+'\n';
+r+='Nb habitants: '+v('nbHab')+'\n';
+if(currentType==='grand'){
+r+='Nb batiments: '+v('nbBat')+'\n';
+r+='Nb proprietaires: '+v('nbProp')+'\n';
+r+='Nb locaux chauffage: '+v('nbLocaux')+'\n';
+}
+r+='Assainissements effectues: '+v('assainEffectues')+'\n';
+r+='Assainissements planifies: '+v('assainPlanifies')+'\n';
+
+r+='\n--- PROPRIETAIRE ---\n';
+r+='Nom: '+v('propPrenom')+' '+v('propNom')+'\n';
+r+='Entreprise: '+v('propEntreprise')+'\n';
+r+='Adresse: '+v('propAdresse')+', '+v('propNpa')+' '+v('propLocalite')+'\n';
+r+='Tel: '+v('propTel')+'\n';
+r+='Email: '+v('propEmail')+'\n';
+r+='Lien: '+getGroupVal('propLien')+'\n';
+
+r+='\n--- CHAUFFAGE EXISTANT ---\n';
+r+='Type: '+getGroupVal('typeChauf')+'\n';
+if(v('chaufAutre'))r+='Autre: '+v('chaufAutre')+'\n';
+r+='Annee: '+v('anneeChauf')+'\n';
+r+='Condensation: '+getGroupVal('condensation')+'\n';
+r+='Puissance: '+v('puissance')+' kW\n';
+r+='Marque/modele: '+v('marqueChauf')+'\n';
+r+='Emission: '+getGroupVal('emission')+'\n';
+r+='Conduites isolees: '+getGroupVal('conduites')+'\n';
+r+='Temperatures: ext '+v('tempExt')+'C / dep '+v('tempDep')+'C / ret '+v('tempRet')+'C\n';
+r+='Type mesure: '+getGroupVal('tempType')+'\n';
+if(currentType==='grand'){r+='Groupes chauffage: '+v('groupesChauffage')+'\n';}
+
+r+='\n--- EAU CHAUDE ---\n';
+r+='Production: '+getGroupVal('eauChaude')+'\n';
+if(currentType==='grand'){r+='Distribution: '+getGroupVal('centralise')+'\n';}
+r+='Contenance: '+v('contenanceCE')+' litres\n';
+r+='Marque CE: '+v('marqueCE')+'\n';
+
+r+='\n--- CONSOMMATION ---\n';
+r+='Chauffage 3 ans: '+v('conso1')+' / '+v('conso2')+' / '+v('conso3')+'\n';
+r+='Unite: '+getGroupVal('unConso')+'\n';
+r+='Inclus ECS: '+(ch('consoInclECS')?'oui':'non')+'\n';
+if(currentType==='grand'){r+='EC separee: '+v('consoEC1')+' / '+v('consoEC2')+' / '+v('consoEC3')+' kWh\n';}
+r+='Couts: '+v('coutEnergie')+' CHF/an\n';
+r+='SRE: '+v('sre')+' m2\n';
+
+r+='\n--- OBSERVATIONS TERRAIN ---\n';
+r+='Enveloppe: '+v('etatEnveloppe')+'\n';
+r+='Local technique: '+v('localTechnique')+'\n';
+r+='Espace exterieur: '+v('espaceExt')+'\n';
+r+='CAD proximite: '+getGroupVal('cad')+'\n';
+r+='Fournisseur elec: '+v('fournElec')+'\n';
+r+='Fournisseur chaleur: '+v('fournChaleur')+'\n';
+r+='Remarques: '+v('remarquesSupp')+'\n';
+
+r+='\n--- FAISABILITE ---\n';
+r+='Puissance necessaire: '+v('puissanceNecessaire')+' kW\n';
+r+='ECS via chauffage: '+getGroupVal('ecsVia')+'\n';
+r+='PAC air-eau: '+getGroupVal('pacAir')+'\n';
+r+='PAC sondes: '+getGroupVal('pacSonde')+'\n';
+if(currentType==='grand'){r+='PAC eaux souterraines: '+getGroupVal('pacEaux')+'\n';}
+r+='Pellets: '+getGroupVal('pellets')+'\n';
+if(currentType==='grand'){r+='Bois copeaux: '+getGroupVal('copeaux')+'\n';}
+r+='CAD: '+getGroupVal('rCad')+'\n';
+r+='Systeme recommande: '+v('sysRecommande')+'\n';
+r+='Combinaison PV: '+getGroupVal('combPV')+'\n';
+r+='Combinaison solaire therm: '+getGroupVal('combST')+'\n';
+
+var photos=document.getElementById('photos').files;
+if(photos.length>0){
+r+='\n--- PHOTOS ---\n';
+r+=photos.length+' photo(s) prises\n';
+Array.from(photos).forEach(function(f,i){r+=(i+1)+'. '+f.name+'\n';});
+}
+
+r+='\n=== FIN RECAPITULATIF ===';
+r+='\n\nMerci de generer tous les textes necessaires pour remplir le rapport CI '+(currentType==='grand'?'GRAND':'PETIT')+' de ce batiment. Base-toi sur les donnees ci-dessus et sur les modeles de rapports fournis dans ce projet.';
+
+document.getElementById('outputBox').textContent=r;
+document.getElementById('outputWrap').classList.remove('hidden');
+window.recapText=r;
+document.getElementById('outputWrap').scrollIntoView({behavior:'smooth'});
+}
+
+function copyRecap(){
+if(window.recapText){
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(window.recapText).then(function(){
+showCopySuccess();
+}).catch(function(){
+fallbackCopy();
+});
+}else{
+fallbackCopy();
+}
+}
+}
+
+function fallbackCopy(){
+var ta=document.createElement('textarea');
+ta.value=window.recapText;
+ta.style.position='fixed';
+ta.style.left='-9999px';
+document.body.appendChild(ta);
+ta.select();
+ta.setSelectionRange(0,99999);
+document.execCommand('copy');
+document.body.removeChild(ta);
+showCopySuccess();
+}
+
+function showCopySuccess(){
+var btn=document.querySelector('.btn-copy');
+var orig=btn.textContent;
+btn.textContent='Copie reussie !';
+btn.style.background='#E1F5EE';
+btn.style.color='#085041';
+btn.style.borderColor='#0F6E56';
+setTimeout(function(){
+btn.textContent=orig;
+btn.style.background='';
+btn.style.color='';
+btn.style.borderColor='';
+},2000);
+}
+
+function resetForm(){
+if(confirm('Reinitialiser tous les champs du formulaire ?')){
+document.querySelectorAll('input[type=text],input[type=number],input[type=email],input[type=tel],textarea').forEach(function(el){
+if(el.id!=='canton')el.value='';
+});
+document.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
+document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+document.querySelectorAll('.chip-group').forEach(function(grp){
+grp.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+});
+document.getElementById('photoPreview').innerHTML='';
+document.getElementById('photos').value='';
+document.getElementById('outputWrap').classList.add('hidden');
+document.getElementById('dateConseil').value=new Date().toISOString().split('T')[0];
+setType('petit');
+window.scrollTo(0,0);
+}
+}
+
+document.getElementById('dateConseil').value=new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>

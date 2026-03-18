@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="CI Tavella">
+<title>Checklist Visite CI — Tavella Solutions</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f5f5f0;color:#1a1a1a;padding:12px;padding-bottom:80px;-webkit-text-size-adjust:100%}
+.header{text-align:center;padding:16px 0 12px;border-bottom:2px solid #0F6E56}
+.header h1{font-size:18px;font-weight:600;color:#0F6E56;margin-bottom:2px}
+.header p{font-size:12px;color:#888}
+.type-banner{text-align:center;padding:10px;border-radius:10px;font-size:14px;font-weight:600;margin:12px 0}
+.type-petit{background:#E1F5EE;color:#085041}
+.type-grand{background:#FAEEDA;color:#633806}
+.sec{background:#fff;border-radius:12px;padding:16px;margin-bottom:12px;border:1px solid #e8e8e3}
+.sec-head{font-size:14px;font-weight:600;color:#0F6E56;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid #eee;display:flex;align-items:center;gap:8px}
+.sec-num{background:#0F6E56;color:#fff;width:22px;height:22px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.row{margin-bottom:12px}
+.lbl{font-size:13px;color:#666;margin-bottom:5px;display:block;font-weight:500}
+input[type=text],input[type=number],input[type=date],input[type=email],input[type=tel],select,textarea{width:100%;font-size:16px;padding:11px 12px;border:1px solid #ddd;border-radius:8px;background:#fff;color:#1a1a1a;-webkit-appearance:none;appearance:none;transition:border-color .2s}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#0F6E56}
+textarea{min-height:72px;resize:vertical;line-height:1.4}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23666' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.chip-group{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chip{font-size:13px;padding:8px 14px;border:1px solid #ddd;border-radius:20px;cursor:pointer;background:#fff;color:#555;transition:all .15s;-webkit-tap-highlight-color:transparent;user-select:none}
+.chip:active{transform:scale(0.96)}
+.chip.on{background:#E1F5EE;border-color:#0F6E56;color:#085041;font-weight:500}
+.cb-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:14px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cb-row input[type=checkbox]{width:22px;height:22px;accent-color:#0F6E56;flex-shrink:0}
+.grand-only{display:none}
+.show-grand .grand-only{display:block}
+.note{font-size:12px;color:#999;margin-top:4px}
+.btn-gen{width:100%;padding:16px;font-size:17px;font-weight:600;background:#0F6E56;color:#fff;border:none;border-radius:12px;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-top:12px}
+.btn-gen:active{background:#085041;transform:scale(0.98)}
+.btn-copy{width:100%;padding:14px;font-size:15px;font-weight:500;background:#fff;color:#1a1a1a;border:1px solid #ddd;border-radius:10px;cursor:pointer;margin-top:8px}
+.btn-copy:active{background:#f0f0f0}
+.output-box{background:#f8f8f5;border-radius:10px;padding:14px;font-size:13px;font-family:'SF Mono',Menlo,monospace;white-space:pre-wrap;word-break:break-word;max-height:350px;overflow-y:auto;margin-top:10px;color:#333;border:1px solid #e8e8e3;line-height:1.5}
+.hidden{display:none}
+.reset-bar{text-align:center;margin-top:12px;padding-top:12px;border-top:1px solid #eee}
+.reset-btn{font-size:13px;color:#A32D2D;background:none;border:none;cursor:pointer;padding:8px 16px;text-decoration:underline}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr;gap:0;border-radius:10px;overflow:hidden;border:1px solid #ddd;margin:12px 0}
+.type-toggle button{padding:12px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent}
+.type-toggle button.active-petit{background:#E1F5EE;color:#085041}
+.type-toggle button.active-grand{background:#FAEEDA;color:#633806}
+.type-toggle button.inactive{background:#fff;color:#999}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h1>Checklist visite CI</h1>
+<p>Tavella Solutions Sarl — chauffez renouvelable</p>
+</div>
+
+<div class="type-toggle">
+<button id="btnPetit" class="active-petit" onclick="setType('petit')">Petit CI (450 CHF)</button>
+<button id="btnGrand" class="inactive" onclick="setType('grand')">Grand CI (1800 CHF)</button>
+</div>
+
+<div id="typeBanner" class="type-banner type-petit">Maisons indiv. et immeubles jusqu'a 6 logements / 30 kW</div>
+
+<div id="mainForm">
+
+<div class="sec">
+<div class="sec-head"><span class="sec-num">1</span> Identification du batiment</div>
+<div class="row"><label class="lbl">Date du conseil / visite</label><input type="date" id="dateConseil"></div>
+<div class="row"><label class="lbl">Adresse du batiment</label><input type="text" id="adresse" placeholder="ex: Rue Jean-Grimoux 2, 1700 Fribourg"></div>
+<div class="row"><label class="lbl">Localite</label><input type="text" id="localite" placeholder="Fribourg"></div>
+<div class="row"><label class="lbl">Categorie du batiment</label>
+<select id="categorie">
+<option value="">-- Choisir --</option>
+<option>I habitat collectif</option>
+<option>II habitat individuel</option>
+<option>III administration</option>
+<option>IV ecoles</option>
+<option>V commerce</option>
+<option>VI restauration</option>
+<option>VII lieux de rassemblement</option>
+<option>VIII hopitaux</option>
+<option>IX industrie</option>
+<option>X depots</option>
+<option>XI installations sportives</option>
+<option>XII piscines couvertes</option>
+</select></div>
+<div class="grid2">
+<div class="row"><label class="lbl">Nb de batiments</label><input type="number" id="nbBat" placeholder="1" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Nb locaux chauffage</label><input type="number" id="nbLocaux" placeholder="1" inputmode="numeric"></div>
+</div>
+<div class="row"><label class="lbl">Assainissements effectues</label><textarea id="assainEffectues" placeholder="ex: Fenetres 2015, isolation toiture 2018"></textarea></div>
+<div class="row"><label class="lbl">Assainissements planifies</label><textarea id="assainPlanifies" placeholder="ex: Changement chauffage"></textarea></div>
+</div>
+
+<div class="sec">
+<div class="sec-head"><span class="sec-num">2</span> Proprietaire / interlocuteur</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Prenom</label><input type="text" id="propPrenom"></div>
+<div class="row"><label class="lbl">Nom</label><input type="text" id="propNom"></div>
+</div>
+<div class="row"><label class="lbl">Entreprise / institution</label><input type="text" id="propEntreprise" placeholder="ex: p.a. Bulliard Immobilier"></div>
+<div class="row"><label class="lbl">Adresse</label><input type="text" id="propAdresse"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">NPA</label><input type="number" id="propNpa" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Localite</label><input type="text" id="propLocalite"></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Telephone</label><input type="tel" id="propTel"></div>
+<div class="row"><label class="lbl">E-mail</label><input type="email" id="propEmail"></div>
+</div>
+<div class="row"><label class="lbl">Lien avec le bien</label>
+<div class="chip-group" data-group="propLien">
+<span class="chip on" onclick="toggleChip(this)">Proprietaire</span>
+<span class="chip" onclick="toggleChip(this)">Gerant/e</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="cb-row"><input type="checkbox" id="adresseIdentique"><label for="adresseIdentique">Adresse identique a celle du client</label></div>
+</div>
+
+<div class="sec">
+<div class="sec-head"><span class="sec-num">3</span> Chauffage existant</div>
+<div class="row"><label class="lbl">Type de chauffage</label>
+<div class="chip-group" data-group="typeChauf">
+<span class="chip on" onclick="toggleChip(this)">Mazout</span>
+<span class="chip" onclick="toggleChip(this)">Gaz</span>
+<span class="chip" onclick="toggleChip(this)">Electrique</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="row"><label class="lbl">Si autre, preciser</label><input type="text" id="chaufAutre" placeholder="ex: bois, pellets"></div>
+<div class="grid2">
+<div class="row"><label class="lbl">Annee installation</label><input type="number" id="anneeChauf" placeholder="2001" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Condensation</label>
+<div class="chip-group" data-group="condensation">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+</div></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Puissance (kW)</label><input type="number" id="puissance" placeholder="80" inputmode="decimal" step="0.1"></div>
+<div class="row"><label class="lbl">Marque / modele</label><input type="text" id="marqueChauf" placeholder="ex: Elcotherm MK 1-80"></div>
+</div>
+<div class="row"><label class="lbl">Emission de chaleur</label>
+<div class="chip-group" data-group="emission">
+<span class="chip" onclick="toggleChip(this)">Chauffage au sol</span>
+<span class="chip" onclick="toggleChip(this)">Radiateur</span>
+<span class="chip" onclick="toggleChip(this)">Mixte</span>
+</div></div>
+<div class="row"><label class="lbl">Conduites isolees</label>
+<div class="chip-group" data-group="conduites">
+<span class="chip" onclick="toggleChip(this)">Oui</span>
+<span class="chip" onclick="toggleChip(this)">Non</span>
+<span class="chip" onclick="toggleChip(this)">Partiellement</span>
+</div></div>
+<div class="row"><label class="lbl">Temperatures</label>
+<div class="grid3">
+<div><span class="note">Ext. (C)</span><input type="number" id="tempExt" placeholder="5" inputmode="decimal" step="0.1"></div>
+<div><span class="note">Depart (C)</span><input type="number" id="tempDep" placeholder="50" inputmode="decimal" step="0.1"></div>
+<div><span class="note">Retour (C)</span><input type="number" id="tempRet" placeholder="40" inputmode="decimal" step="0.1"></div>
+</div></div>
+<div class="row"><label class="lbl">Type de mesure</label>
+<div class="chip-group" data-group="tempType">
+<span class="chip" onclick="toggleChip(this)">Mesurees</span>
+<span class="chip" onclick="toggleChip(this)">Parametre de reglage</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Groupes de chauffage</label><textarea id="groupesChauffage" placeholder="Nom / Type / T depart / T retour&#10;ex: Radiateurs / Corps de chauffe / 50 / 40"></textarea></div>
+</div>
+</div>
+
+<div class="sec">
+<div class="sec-head"><span class="sec-num">4</span> Eau chaude sanitaire</div>
+<div class="row"><label class="lbl">Type de production</label>
+<div class="chip-group" data-group="eauChaude">
+<span class="chip" onclick="toggleChip(this)">Chaudiere</span>
+<span class="chip" onclick="toggleChip(this)">Chauffe-eau elec.</span>
+<span class="chip" onclick="toggleChip(this)">Chauffe-eau PAC</span>
+<span class="chip" onclick="toggleChip(this)">Solaire thermique</span>
+<span class="chip" onclick="toggleChip(this)">Autre</span>
+</div></div>
+<div class="grand-only">
+<div class="row"><label class="lbl">Distribution</label>
+<div class="chip-group" data-group="centralise">
+<span class="chip" onclick="toggleChip(this)">Centralisee</span>
+<span class="chip" onclick="toggleChip(this)">Decentralisee</span>
+</div></div>
+</div>
+<div class="grid2">
+<div class="row"><label class="lbl">Contenance (litres)</label><input type="number" id="contenanceCE" placeholder="160" inputmode="numeric"></div>
+<div class="row"><label class="lbl">Marque / modele</label><input type="text" id="marqueCE" placeholder="ex: Statico SU 200.3"></div>
+</div>
+</div>
+
+<button class="btn-gen" onclick="generateRecap()">Generer et copier le recapitulatif</button>
+
+<div id="outputWrap" class="hidden">
+<div id="outputBox" class="output-box"></div>
+<button class="btn-copy" onclick="copyRecap()">Copier dans le presse-papier</button>
+<div class="note" style="text-align:center;margin-top:6px">Collez dans votre Projet Claude « Tavella CI »</div>
+</div>
+
+<div class="reset-bar">
+<button class="reset-btn" onclick="resetForm()">Reinitialiser le formulaire</button>
+</div>
+
+</div>
+
+<script>
+var currentType='petit';
+
+function setType(t){
+currentType=t;
+var banner=document.getElementById('typeBanner');
+var bp=document.getElementById('btnPetit');
+var bg=document.getElementById('btnGrand');
+var form=document.getElementById('mainForm');
+if(t==='grand'){
+banner.className='type-banner type-grand';
+banner.textContent='PPE et grands immeubles >6 logements / >30 kW';
+bp.className='inactive';
+bg.className='active-grand';
+form.classList.add('show-grand');
+}else{
+banner.className='type-banner type-petit';
+banner.textContent='Maisons indiv. et immeubles jusqu\'a 6 logements / 30 kW';
+bp.className='active-petit';
+bg.className='inactive';
+form.classList.remove('show-grand');
+}
+}
+
+function toggleChip(el){
+var parent=el.parentElement;
+parent.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+el.classList.add('on');
+}
+
+function getGroupVal(gn){
+var g=document.querySelector('[data-group="'+gn+'"]');
+if(!g)return '';
+var a=g.querySelector('.chip.on');
+return a?a.textContent.trim():'';
+}
+
+function v(id){var e=document.getElementById(id);return e?(e.value||'').trim():'';}
+function ch(id){var e=document.getElementById(id);return e?e.checked:false;}
+
+function generateRecap(){
+var type=currentType==='grand'?'GRAND CI (1800 CHF)':'PETIT CI (450 CHF)';
+var r='=== RECAPITULATIF VISITE TERRAIN CI ===\nType: '+type+'\n\n';
+
+r+='--- IDENTIFICATION ---\n';
+r+='Date: '+v('dateConseil')+'\n';
+r+='Adresse: '+v('adresse')+'\n';
+r+='Localite: '+v('localite')+'\n';
+r+='Categorie: '+v('categorie')+'\n';
+r+='Nb batiments: '+v('nbBat')+'\n';
+r+='Nb locaux chauffage: '+v('nbLocaux')+'\n';
+r+='Assainissements effectues: '+v('assainEffectues')+'\n';
+r+='Assainissements planifies: '+v('assainPlanifies')+'\n';
+
+r+='\n--- PROPRIETAIRE ---\n';
+r+='Nom: '+v('propPrenom')+' '+v('propNom')+'\n';
+r+='Entreprise: '+v('propEntreprise')+'\n';
+r+='Adresse: '+v('propAdresse')+', '+v('propNpa')+' '+v('propLocalite')+'\n';
+r+='Tel: '+v('propTel')+'\n';
+r+='Email: '+v('propEmail')+'\n';
+r+='Lien: '+getGroupVal('propLien')+'\n';
+r+='Adresse identique client: '+(ch('adresseIdentique')?'oui':'non')+'\n';
+
+r+='\n--- CHAUFFAGE EXISTANT ---\n';
+r+='Type: '+getGroupVal('typeChauf')+'\n';
+if(v('chaufAutre'))r+='Autre: '+v('chaufAutre')+'\n';
+r+='Annee: '+v('anneeChauf')+'\n';
+r+='Condensation: '+getGroupVal('condensation')+'\n';
+r+='Puissance: '+v('puissance')+' kW\n';
+r+='Marque/modele: '+v('marqueChauf')+'\n';
+r+='Emission: '+getGroupVal('emission')+'\n';
+r+='Conduites isolees: '+getGroupVal('conduites')+'\n';
+r+='Temperatures: ext '+v('tempExt')+'C / dep '+v('tempDep')+'C / ret '+v('tempRet')+'C\n';
+r+='Type mesure: '+getGroupVal('tempType')+'\n';
+if(currentType==='grand'&&v('groupesChauffage')){r+='Groupes chauffage: '+v('groupesChauffage')+'\n';}
+
+r+='\n--- EAU CHAUDE ---\n';
+r+='Production: '+getGroupVal('eauChaude')+'\n';
+if(currentType==='grand'){r+='Distribution: '+getGroupVal('centralise')+'\n';}
+r+='Contenance: '+v('contenanceCE')+' litres\n';
+r+='Marque CE: '+v('marqueCE')+'\n';
+
+r+='\n=== FIN RECAPITULATIF ===';
+r+='\n\nVoici les donnees de ma visite terrain. Merci de generer tous les textes necessaires pour remplir le rapport CI '+(currentType==='grand'?'GRAND':'PETIT')+' de ce batiment.';
+
+document.getElementById('outputBox').textContent=r;
+document.getElementById('outputWrap').classList.remove('hidden');
+window.recapText=r;
+
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(r).then(function(){
+var btn=document.querySelector('.btn-gen');
+var orig=btn.textContent;
+btn.textContent='Recapitulatif copie !';
+btn.style.background='#085041';
+setTimeout(function(){btn.textContent=orig;btn.style.background='';},2000);
+}).catch(function(){
+document.getElementById('outputWrap').scrollIntoView({behavior:'smooth'});
+});
+}else{
+fallbackCopy(r);
+}
+}
+
+function copyRecap(){
+if(window.recapText){
+if(navigator.clipboard&&navigator.clipboard.writeText){
+navigator.clipboard.writeText(window.recapText).then(function(){showCopySuccess();}).catch(function(){fallbackCopy(window.recapText);});
+}else{fallbackCopy(window.recapText);}
+}
+}
+
+function fallbackCopy(text){
+var ta=document.createElement('textarea');
+ta.value=text;
+ta.style.position='fixed';
+ta.style.left='-9999px';
+document.body.appendChild(ta);
+ta.select();
+ta.setSelectionRange(0,99999);
+document.execCommand('copy');
+document.body.removeChild(ta);
+showCopySuccess();
+}
+
+function showCopySuccess(){
+var btn=document.querySelector('.btn-copy');
+var orig=btn.textContent;
+btn.textContent='Copie reussie !';
+btn.style.background='#E1F5EE';btn.style.color='#085041';btn.style.borderColor='#0F6E56';
+setTimeout(function(){btn.textContent=orig;btn.style.background='';btn.style.color='';btn.style.borderColor='';},2000);
+}
+
+function resetForm(){
+if(confirm('Reinitialiser tous les champs du formulaire ?')){
+document.querySelectorAll('input[type=text],input[type=number],input[type=email],input[type=tel],textarea').forEach(function(el){el.value='';});
+document.querySelectorAll('input[type=checkbox]').forEach(function(el){el.checked=false;});
+document.querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+document.querySelectorAll('.chip-group').forEach(function(grp){
+grp.querySelectorAll('.chip').forEach(function(c){c.classList.remove('on');});
+});
+document.getElementById('outputWrap').classList.add('hidden');
+document.getElementById('dateConseil').value=new Date().toISOString().split('T')[0];
+setType('petit');
+window.scrollTo(0,0);
+}
+}
+
+document.getElementById('dateConseil').value=new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
